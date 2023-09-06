@@ -1,0 +1,14 @@
+{
+    "repos": [
+        {
+            "name": "React_App",
+            "description": "FE repo",
+            "team": "FE Development Team"
+        },
+        {
+            "name": "Python_Flask",
+            "description": "BE repo",
+            "team": "BE Development Team"
+        }
+    ]
+}

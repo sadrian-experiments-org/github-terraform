@@ -6,11 +6,14 @@ data "github_user" "self" {
 }
 
 module "teams" {
-    source = "./modules/teams_module"  
+    source = "./modules/teams_module"
+    orgs = var.orgs
+    teams = var.teams  
 }
 
 module "repos" {
     source = "./modules/repo_module"
-    sub_teams = module.teams.sub_teams
-    main_teams = module.teams.main_teams
+    repos = var.repos
+    repos_ownership = var.repos_ownership
+    teams = module.teams.teams
 }

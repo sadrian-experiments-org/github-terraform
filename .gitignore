@@ -10,3 +10,6 @@
 
 # Backup files
 *.bak
+
+# ENV script
+.ENV.sh

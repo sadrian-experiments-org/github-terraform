@@ -6,14 +6,14 @@ data "github_user" "self" {
 }
 
 module "teams" {
-    source = "./modules/teams_module"
-    orgs = var.orgs
-    teams = var.teams  
+    source = "./blueprints/fundamental/github_repo"
+    orgs = local.team_module_vars.orgs
+    teams = local.team_module_vars.teams
 }
 
 module "repos" {
-    source = "./modules/repo_module"
-    repos = var.repos
-    repos_ownership = var.repos_ownership
+    source = "./blueprints/fundamental/github_teams"
+    repos = local.repo_module_vars.repos
+    repos_ownership = local.repo_module_vars.repos_ownership
     teams = module.teams.teams
 }

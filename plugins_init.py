@@ -8,9 +8,12 @@ def main():
     config = read_json_config('plugins.json')
     plugins = config.get('plugins', [])
     module_configs = [generate_module_config(plugin) for plugin in plugins]
+    
     append_module_configs(module_configs, 'main.tf')
     create_plugin_data_structure(plugins)
-    clone_readme_file_in_plugin_data_structure(plugins)
+
+    github_urls = compose_github_url(plugins)
+    clone_readme_file_in_plugin_data_structure(plugins, github_urls)
 
 def read_json_config(file_path):
     with open(file_path, 'r') as json_file:
@@ -51,21 +54,27 @@ def create_plugin_data_structure(plugins):
             with open(config_file_path, 'w') as config_file:
                 config_file.write('{}')
 
-def clone_readme_file_in_plugin_data_structure(plugins):
+def clone_readme_file_in_plugin_data_structure(plugins, github_urls):
     for plugin in plugins:
-        source = plugin["source"].split('/')[-2:]
-        url = compose_github_url(source)
+        url = github_urls[plugin["name"]]
         response = requests.get(url)
 
         with open(f'data/{plugin["name"]}/README.md', "w") as config_file:
             config_file.write(response.text)
 
-def compose_github_url(source):
-    base_url = "https://raw.githubusercontent.com/"
-    org = source[0]
-    module = source[1]
-    default_branch = 'dev'
-    return f'{base_url}{org}/{module}/{default_branch}/README.md'
+def compose_github_url(plugins):
+    github_urls ={}
+
+    for plugin in plugins:    
+        source = plugin["source"].split('/')[-2:]
+        org = source[0]
+        module = source[1]
+
+        base_url = "https://raw.githubusercontent.com/"
+        default_branch = 'dev'
+
+        github_urls[plugin["name"]] = f"{base_url}{org}/{module}/{default_branch}/README.md"
+    return github_urls
 
 if __name__ == "__main__":
     main()

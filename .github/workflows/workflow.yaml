@@ -1,0 +1,35 @@
+name: PR Merged Workflow
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  merge_triggered_job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      if: github.event.pull_request.merged == true
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.10  # Replace 'x' with the desired Python version (e.g., 3.8)
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Run Python script
+      run: |
+        python plugins_init.py
+    
+    - name: Commit changes
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add .  # This adds all changes in the repository
+        git commit -m "Automated commit by GitHub Actions"
+        git push
